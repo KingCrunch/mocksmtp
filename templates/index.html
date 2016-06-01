@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>List</title>
+</head>
+<body>
+<table>
+    <tbody>
+    {{range $index,$element := .}}
+    <tr>
+        <td><a href="/mail/{{$index}}" target="parent">{{$index}}</a></td>
+        <td>{{$element.Sender}}</td>
+        <td>{{range $recipient := $element.Recipients}}{{ $recipient }}{{else}}No recipients!{{end}}</td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="3">Nothing to see here</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+</body>
+</html>
