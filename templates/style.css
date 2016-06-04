@@ -1,0 +1,30 @@
+#container {
+    width:100%;
+    display:-webkit-flex;
+    display:flex;
+
+
+    position:fixed !important;
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+}
+
+.box {
+    width:50%;
+
+    height: 100%;
+}
+
+table {
+    width: 100%;
+}
+
+iframe {
+    height: 100%
+}
+tbody tr:nth-child(odd) {
+   background-color: #ccc;
+}

@@ -3,22 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>List</title>
+    <style>
+        {{template "style.css"}}
+    </style>
+    <script type="text/javascript">
+        {{template "script.js"}}
+    </script>
 </head>
 <body>
-<table>
-    <tbody>
-    {{range $index,$element := .}}
-    <tr>
-        <td><a href="/mail/{{$index}}" target="parent">{{$index}}</a></td>
-        <td>{{$element.Sender}}</td>
-        <td>{{range $recipient := $element.Recipients}}{{ $recipient }}{{else}}No recipients!{{end}}</td>
-    </tr>
-    {{else}}
-    <tr>
-        <td colspan="3">Nothing to see here</td>
-    </tr>
-    {{end}}
-    </tbody>
-</table>
+    <div id="container">
+        <div class="box">
+            <table>
+            <thead>
+            <tr>
+                <td>Received</td>
+                <td>Sender</td>
+                <td>Recipients</td>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index,$element := .}}
+            <tr onclick="loadMail({{$index}})">
+                <td>{{$element.ReceivedAt}}</td>
+                <td>{{$element.Sender}}</td>
+                <td>
+                    <ul>
+                        {{range $recipient := $element.Recipients}}<li>{{ $recipient }}</li>{{else}}No recipients!{{end}}
+                    </ul>
+                </td>
+
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="3">No Mails received yet.</td>
+            </tr>
+            {{end}}
+            </tbody>
+            </table>
+        </div>
+        <div class="box">
+            <iframe id="mailframe" style="width: 100%;" src="/mail"></iframe>
+        </div>
+    </div>
 </body>
 </html>
