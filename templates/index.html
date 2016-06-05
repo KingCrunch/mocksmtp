@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             {{range $index,$element := .}}
-            <tr onclick="loadMail({{$index}})">
+            <tr style="cursor:pointer;" onclick="loadMailMeta({{$index}})">
                 <td>{{$element.ReceivedAt}}</td>
                 <td>{{$element.Sender}}</td>
                 <td>
@@ -41,8 +41,8 @@
             </tbody>
             </table>
         </div>
-        <div class="box">
-            <iframe id="mailframe" style="width: 100%;" src="/mail"></iframe>
+        <div class="box" id="meta">
+            Select a mail from the list.
         </div>
     </div>
 </body>

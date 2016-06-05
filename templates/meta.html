@@ -1,0 +1,42 @@
+<section>
+    <table>
+        <thead>
+        <tr>
+            <td>Header</td>
+            <td>Value</td>
+        </tr>
+        </thead>
+        <tbody>
+        {{range $index,$element := .Header}}
+            <tr>
+            <td>{{$index}}</td>
+            <td><ul>{{range $element}}<li>{{.}}</li>{{end}}</ul></td>
+            </tr>
+        {{end}}
+        </tbody>
+    </table>
+    <table>
+        <thead>
+        <tr>
+            <td>Content-Type</td>
+            <td>Disposition</td>
+        </tr>
+        </thead>
+        <tbody>
+        {{$id := .Id}}
+    {{if .Multipart}}
+    {{range $index,$element := .Parts}}
+        <tr style="cursor:pointer;" onclick="loadMail({{$id}}, {{$index}})">
+            <td>{{index $element.Header "Content-Type" 0}}</td>
+            <td>{{$element.Disposition}}</td>
+        </tr>
+    {{end}}
+    {{else}}
+        <tr style="cursor:pointer;" onclick="loadMail({{$id}})">
+            <td>{{index .Header "Content-Type" 0}}</td>
+            <td>inline</td>
+        </tr>
+    {{end}}
+        </tbody>
+    </table>
+</section>

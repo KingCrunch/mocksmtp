@@ -15,6 +15,7 @@ import (
 )
 
 type Mail struct {
+	Id uuid.UUID
 	ReceivedAt time.Time
 	Sender string
 	Recipients []string
@@ -66,6 +67,7 @@ func handEnvelope (env smtpd.Envelope) {
 	check(err)
 
 	mail := &Mail{
+		Id: uuid.NewV4(),
 		ReceivedAt: time.Now(),
 		Sender: string(env.Sender),
 		Recipients: env.Recipients,
@@ -103,5 +105,5 @@ func handEnvelope (env smtpd.Envelope) {
 		}
 	}
 
-	mailBucket[uuid.NewV4()] = *mail
+	mailBucket[mail.Id] = *mail
 }
