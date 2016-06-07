@@ -1,5 +1,7 @@
 package main
 
+//go:generate go-bindata-assetfs static/... templates/...
+
 import (
 	"bitbucket.org/chrj/smtpd"
 	"github.com/satori/go.uuid"

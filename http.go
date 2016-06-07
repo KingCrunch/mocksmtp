@@ -4,33 +4,29 @@ import (
 	"net/http"
 	"fmt"
 	"html"
-	"path"
-	"html/template"
 	"github.com/satori/go.uuid"
+	"github.com/julienschmidt/httprouter"
 )
 
 func RunHttpServer() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		t, err := template.New("index.html").ParseFiles("templates/index.html", "templates/style.css", "templates/script.js")
-		check(err)
-		err = t.Execute(w, mailBucket)
+	router := httprouter.New()
+
+	// Serve static assets via the "static" directory
+	router.ServeFiles("/static/*filepath", assetFS())
+
+	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		err := templates.ExecuteTemplate(w, "templates/index.html", mailBucket)
 		check(err)
 	})
-	http.HandleFunc("/mail", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprint(w, html.EscapeString("Click on a mail"))
-	})
-	http.HandleFunc("/mail/meta/", func(w http.ResponseWriter, r *http.Request) {
-		id, err := uuid.FromString(path.Base(r.URL.Path))
-		check(err)
-		t, err := template.New("meta.html").ParseFiles("templates/meta.html")
+	router.GET("/mail/meta/:id", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		id, err := uuid.FromString(params.ByName("id"))
 		check(err)
 
-		err = t.Execute(w, mailBucket[id])
+		err = templates.ExecuteTemplate(w, "templates/meta.html", mailBucket[id])
 		check(err)
 	})
-	http.HandleFunc("/mail/", func(w http.ResponseWriter, r *http.Request) {
-		id, err := uuid.FromString(path.Base(r.URL.Path))
+	router.GET("/mail/multi/:id/:part", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		id, err := uuid.FromString(params.ByName("id"))
 		check(err)
 
 		fmt.Fprint(w, html.EscapeString(string(mailBucket[id].Data)))
@@ -38,6 +34,6 @@ func RunHttpServer() {
 		// TODO Parse multipart-request
 	})
 
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", router)
 	check(err)
 }

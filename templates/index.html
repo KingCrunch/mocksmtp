@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>List</title>
     <style>
-        {{template "style.css"}}
+        {{template "static/style.css"}}
     </style>
     <script type="text/javascript">
-        {{template "script.js"}}
+        {{template "static/script.js"}}
     </script>
 </head>
 <body>
@@ -24,7 +24,7 @@
             <tbody>
             {{range $index,$element := .}}
             <tr style="cursor:pointer;" onclick="loadMailMeta({{$index}})">
-                <td>{{$element.ReceivedAt}}</td>
+                <td>{{$element.ReceivedAt | datetime}}</td>
                 <td>{{$element.Sender}}</td>
                 <td>
                     <ul>
