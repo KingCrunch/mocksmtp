@@ -83,6 +83,7 @@ func main() {
 		return
 	}
 
+	fmt.Println("Start HTTP-Server listening on "+options.HttpBind)
 	go RunHttpServer(options.HttpBind)
 
 	server := &smtpd.Server{
@@ -93,6 +94,8 @@ func main() {
 			return nil
 		},
 	}
+
+	fmt.Println("Start SMTP-server listening on "+options.SmtpBind)
 	err := server.ListenAndServe(options.SmtpBind)
 	check(err)
 }
