@@ -6,19 +6,14 @@ import (
 	"bitbucket.org/chrj/smtpd"
 	"github.com/satori/go.uuid"
 	"log"
-	"strings"
 	"net/textproto"
-	"bufio"
-	"mime"
-	"mime/multipart"
-	"io"
-	"io/ioutil"
 	"time"
 	"flag"
 	"fmt"
 	"runtime"
 	"path/filepath"
 	"os"
+	"os/signal"
 )
 
 const Name string = "visualsmtp"
@@ -86,74 +81,28 @@ func main() {
 	fmt.Println("Start HTTP-Server listening on "+options.HttpBind)
 	go RunHttpServer(options.HttpBind)
 
-	server := &smtpd.Server{
-		Handler: func(peer smtpd.Peer, env smtpd.Envelope) error {
-			log.Printf("New Mail from %q to %q", env.Sender, env.Recipients)
-			go handEnvelope(env)
-
-			return nil
-		},
-	}
-
 	fmt.Println("Start SMTP-server listening on "+options.SmtpBind)
-	err := server.ListenAndServe(options.SmtpBind)
-	check(err)
+	ch := make(chan struct {smtpd.Peer; smtpd.Envelope}, 10)
+	go RunSmtpServer(options.SmtpBind, ch)
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	for {
+		select {
+		case rc := <-ch:
+			go handEnvelope(rc.Envelope)
+		case s := <-c:
+			if (s == os.Interrupt) {
+				fmt.Println("\nExit. Bye!")
+				return
+			}
+		}
+	}
 }
 
 func check (err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func handEnvelope (env smtpd.Envelope) {
-	reader := bufio.NewReader(strings.NewReader(string(env.Data)))
-	tp := textproto.NewReader(reader)
-
-	mimeHeader, err := tp.ReadMIMEHeader()
-	check(err)
-
-	mediaType, params, err := mime.ParseMediaType(mimeHeader.Get("Content-Type"))
-	check(err)
-
-	mail := &Mail{
-		Id: uuid.NewV4(),
-		ReceivedAt: time.Now(),
-		Sender: string(env.Sender),
-		Recipients: env.Recipients,
-		Header: mimeHeader,
-		Data: env.Data,
-	}
-
-
-
-	if strings.HasPrefix(mediaType, "multipart/") {
-		mail.Multipart = true
-		mail.Parts = make([]MailPart, 0, 0)
-
-		mr := multipart.NewReader(strings.NewReader(string(env.Data)), params["boundary"])
-		for {
-			p, err := mr.NextPart()
-			if err == io.EOF {
-				break
-			}
-			check(err)
-			slurp, err := ioutil.ReadAll(p)
-			check(err)
-
-			disp, dispParams, err  := mime.ParseMediaType(p.Header.Get("Content-Disposition"))
-			check(err)
-
-			part := &MailPart{
-				Header: p.Header,
-				Disposition: disp,
-				DispositionParams: dispParams,
-				Data: slurp,
-			}
-
-			mail.Parts = append(mail.Parts, *part)
-		}
-	}
-
-	mailBucket[mail.Id] = *mail
 }
