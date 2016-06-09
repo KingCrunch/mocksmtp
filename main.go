@@ -14,7 +14,18 @@ import (
 	"io"
 	"io/ioutil"
 	"time"
+	"flag"
+	"fmt"
+	"runtime"
+	"path/filepath"
+	"os"
 )
+
+const Name string = "visualsmtp"
+const Version string = "0.1.0"
+const Help string = `
+This tool provides a SMTP-Server and a HTTP-server.
+`
 
 type Mail struct {
 	Id uuid.UUID
@@ -35,10 +46,44 @@ type MailPart struct {
 	Data []byte
 }
 
-var mailBucket map[uuid.UUID]Mail = make(map[uuid.UUID] Mail)
+var (
+	mailBucket map[uuid.UUID]Mail = make(map[uuid.UUID] Mail)
+	options struct {
+		HttpBind string
+		SmtpBind string
+		Version bool
+		Help bool
+	}
+)
+
+func init() {
+	flag.StringVar(&options.HttpBind, "http-bind", ":12080", "The IP and port to bind the HTTP-server to: [<ip>]:port")
+	flag.StringVar(&options.SmtpBind, "smtp-bind", ":12025", "The IP and port to bind the SMTP-server to: [<ip>]:port")
+	flag.BoolVar(&options.Help, "help", false, "Help")
+	flag.BoolVar(&options.Help, "h", false, "See --help")
+	flag.BoolVar(&options.Version, "version", false, "Show Version")
+
+}
 
 func main() {
-	go RunHttpServer()
+	flag.Parse()
+
+	if (options.Help) {
+		file, err := filepath.Abs(os.Args[0])
+		check(err)
+		fmt.Println(Name+"-"+Version+"-"+runtime.GOOS+"-"+runtime.GOARCH)
+		fmt.Println(file+" [-help|-h] [-version] [-http-bind=[<ip>]:<port>] [-smtp-bind=[<ip>]:<port>]")
+		fmt.Println(Help)
+		flag.PrintDefaults()
+		return
+	}
+
+	if (options.Version) {
+		fmt.Println(Name+"-"+Version+"-"+runtime.GOOS+"-"+runtime.GOARCH)
+		return
+	}
+
+	go RunHttpServer(options.HttpBind)
 
 	server := &smtpd.Server{
 		Handler: func(peer smtpd.Peer, env smtpd.Envelope) error {
@@ -48,7 +93,7 @@ func main() {
 			return nil
 		},
 	}
-	err := server.ListenAndServe("127.0.0.1:10025")
+	err := server.ListenAndServe(options.SmtpBind)
 	check(err)
 }
 

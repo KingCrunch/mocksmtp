@@ -8,7 +8,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func RunHttpServer() {
+func RunHttpServer(bind string) {
 	router := httprouter.New()
 
 	// Serve static assets via the "static" directory
@@ -34,6 +34,6 @@ func RunHttpServer() {
 		// TODO Parse multipart-request
 	})
 
-	err := http.ListenAndServe(":8080", router)
+	err := http.ListenAndServe(bind, router)
 	check(err)
 }
