@@ -3,7 +3,6 @@ package main
 //go:generate go-bindata-assetfs static/... templates/...
 
 import (
-	"github.com/satori/go.uuid"
 	"log"
 	"flag"
 	"fmt"
@@ -12,7 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"github.com/KingCrunch/visualsmtp/store"
-	"github.com/KingCrunch/visualsmtp/mail"
+	"time"
 )
 
 const Name string = "visualsmtp"
@@ -22,10 +21,10 @@ This tool provides a SMTP-Server and a HTTP-server.
 `
 
 var (
-	mailBucket map[uuid.UUID]mail.Mail = make(map[uuid.UUID] mail.Mail)
 	options struct {
 		HttpBind string
 		SmtpBind string
+		Retention time.Duration
 		Version bool
 		Help bool
 	}
@@ -34,10 +33,11 @@ var (
 func init() {
 	flag.StringVar(&options.HttpBind, "http-bind", ":12080", "The IP and port to bind the HTTP-server to: [<ip>]:port")
 	flag.StringVar(&options.SmtpBind, "smtp-bind", ":12025", "The IP and port to bind the SMTP-server to: [<ip>]:port")
+	i, _ := time.ParseDuration("10m")
+	flag.DurationVar(&options.Retention, "retention-time", i, "Retention time")
 	flag.BoolVar(&options.Help, "help", false, "Help")
 	flag.BoolVar(&options.Help, "h", false, "See --help")
 	flag.BoolVar(&options.Version, "version", false, "Show Version")
-
 }
 
 func main() {
@@ -69,14 +69,19 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
+	ticker := time.NewTicker(time.Second * 10)
 	for {
 		select {
 		case s := <-c:
 			if (s == os.Interrupt) {
+				ticker.Stop()
 				fmt.Println("\nExit. Bye!")
 				return
 			}
+		case t := <-ticker.C:
+			s.PurgeBefore(t.Add(-1 * options.Retention))
 		}
+
 	}
 }
 

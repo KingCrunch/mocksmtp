@@ -24,11 +24,17 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 	router.GET("/mail/meta/:id", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
-		check(err)
+		if (err != nil) {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
 		var m mail.Mail
 		m, err = s.Get(id)
-		check(err)
+		if (err != nil) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 
 		data := struct{
 			Id uuid.UUID
@@ -42,15 +48,27 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 	router.GET("/mail/multi/:id/:part", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
-		check(err)
+		if (err != nil) {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
 		var m mail.Mail
 		m, err = s.Get(id)
-		check(err)
+		if (err != nil) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 
 		fmt.Fprint(w, html.EscapeString(string(m.Data)))
 
 		// TODO Parse multipart-request
+	})
+
+	router.DELETE("/mail", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		s.Purge()
+
+		w.WriteHeader(http.StatusOK)
 	})
 
 	err := http.ListenAndServe(bind, router)

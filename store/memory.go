@@ -3,6 +3,7 @@ package store
 import (
 	"github.com/satori/go.uuid"
 	"github.com/KingCrunch/visualsmtp/mail"
+	"time"
 )
 
 type InMemory struct {
@@ -28,4 +29,20 @@ func (s InMemory) Push(mail mail.Mail) (uuid.UUID, error) {
 	s.mailBucket[id] = mail
 
 	return id, nil
+}
+
+func (s InMemory) PurgeBefore(t time.Time) error {
+	for index, mail := range s.mailBucket {
+		if (mail.ReceivedAt.Before(t)) {
+			delete(s.mailBucket, index)
+		}
+	}
+
+	return nil
+}
+
+func (s InMemory) Purge() (error) {
+	s.mailBucket = make(map[uuid.UUID] mail.Mail)
+
+	return nil
 }
