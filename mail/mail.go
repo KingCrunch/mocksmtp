@@ -10,8 +10,9 @@ import (
 	"mime"
 	"io"
 	"io/ioutil"
-	"bufio"
 	"log"
+	"bytes"
+	"bufio"
 )
 
 type Mail struct {
@@ -36,8 +37,7 @@ type MailPart struct {
 
 
 func NewMail (peer smtpd.Peer, env smtpd.Envelope) Mail {
-	reader := bufio.NewReader(strings.NewReader(string(env.Data)))
-	tp := textproto.NewReader(reader)
+	tp := textproto.NewReader(bufio.NewReader(bytes.NewReader(env.Data)))
 
 	mimeHeader, err := tp.ReadMIMEHeader()
 	check(err)
@@ -60,12 +60,8 @@ func NewMail (peer smtpd.Peer, env smtpd.Envelope) Mail {
 		m.Multipart = true
 		m.Parts = make([]MailPart, 0, 0)
 
-		mr := multipart.NewReader(strings.NewReader(string(env.Data)), params["boundary"])
-		for {
-			p, err := mr.NextPart()
-			if err == io.EOF {
-				break
-			}
+		mr := multipart.NewReader(bytes.NewReader(env.Data), params["boundary"])
+		for p, err := mr.NextPart(); err != io.EOF; p, err = mr.NextPart() {
 			check(err)
 			slurp, err := ioutil.ReadAll(p)
 			check(err)
