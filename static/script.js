@@ -1,5 +1,10 @@
-function loadMail(id) {
-    window.open('/mail/'+id, '_blank');
+function loadMail(id, index) {
+    if (typeof index !== 'undefined') {
+        window.open('/mail/multi/'+id+'/'+index, '_blank');
+    }
+    else {
+        window.open('/mail/'+id, '_blank');
+    }
 }
 
 function loadMailMeta(id) {

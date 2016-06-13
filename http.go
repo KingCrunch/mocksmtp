@@ -8,6 +8,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/KingCrunch/visualsmtp/store"
 	"github.com/KingCrunch/visualsmtp/mail"
+	"strconv"
 )
 
 func RunHttpServer(bind string, s store.Store) {
@@ -41,6 +42,7 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 	router.GET("/mail/multi/:id/:part", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
+		index,err := strconv.Atoi(params.ByName("part"))
 		if (err != nil) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -53,9 +55,7 @@ func RunHttpServer(bind string, s store.Store) {
 			return
 		}
 
-		fmt.Fprint(w, html.EscapeString(string(m.Data)))
-
-		// TODO Parse multipart-request
+		fmt.Fprint(w, html.EscapeString(string(m.Parts[index].Data)))
 	})
 
 	router.DELETE("/mail", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
