@@ -24,11 +24,10 @@ func (s InMemory) List() (map[uuid.UUID]mail.Mail, error) {
 	return s.mailBucket, nil
 }
 
-func (s InMemory) Push(mail mail.Mail) (uuid.UUID, error) {
-	id := uuid.NewV4()
-	s.mailBucket[id] = mail
+func (s InMemory) Push(mail mail.Mail) (error) {
+	s.mailBucket[mail.Id] = mail
 
-	return id, nil
+	return nil
 }
 
 func (s InMemory) PurgeBefore(t time.Time) error {

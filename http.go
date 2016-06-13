@@ -36,14 +36,7 @@ func RunHttpServer(bind string, s store.Store) {
 			return
 		}
 
-		data := struct{
-			Id uuid.UUID
-			Mail mail.Mail
-		}{
-			id,
-			m,
-		}
-		err = templates.ExecuteTemplate(w, "templates/meta.html", data)
+		err = templates.ExecuteTemplate(w, "templates/meta.html", m)
 		check(err)
 	})
 	router.GET("/mail/multi/:id/:part", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
