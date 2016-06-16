@@ -45,13 +45,23 @@ func NewMail (peer smtpd.Peer, env smtpd.Envelope) Mail {
 	mediaType, params, err := mime.ParseMediaType(mimeHeader.Get("Content-Type"))
 	check(err)
 
+	var data string
+	for {
+		l, e := tp.ReadLine()
+		if (e == io.EOF) {
+			log.Print(e)
+			break
+		}
+		data = data+"\n"+l
+	}
+
 	m := &Mail{
 		Id: uuid.NewV4(),
 		ReceivedAt: time.Now(),
 		Sender: string(env.Sender),
 		Recipients: env.Recipients,
 		Header: mimeHeader,
-		Data: env.Data,
+		Data: []byte(data),
 	}
 
 
