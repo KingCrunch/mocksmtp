@@ -22,13 +22,13 @@
             </tr>
             </thead>
             <tbody>
-            {{range $index,$element := .}}
-            <tr style="cursor:pointer;" onclick="loadMailMeta({{$index}})">
-                <td>{{$element.ReceivedAt | datetime}}</td>
-                <td>{{$element.Sender}}</td>
+            {{range .}}
+            <tr style="cursor:pointer;" onclick="loadMailMeta({{.Id}})">
+                <td>{{.ReceivedAt | datetime}}</td>
+                <td>{{.Sender}}</td>
                 <td>
                     <ul>
-                        {{range $recipient := $element.Recipients}}<li>{{ $recipient }}</li>{{else}}No recipients!{{end}}
+                        {{range .Recipients}}<li>{{ . }}</li>{{else}}No recipients!{{end}}
                     </ul>
                 </td>
 

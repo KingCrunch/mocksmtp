@@ -8,7 +8,7 @@ import (
 
 type Store interface {
 	Get(id uuid.UUID) (mail.Mail, error)
-	List() (map[uuid.UUID]mail.Mail, error)
+	List() ([]mail.Mail, error)
 	Push(mail mail.Mail) (error)
 	PurgeBefore(t time.Time) (error)
 	Purge() (error)

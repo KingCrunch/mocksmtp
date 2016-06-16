@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bitbucket.org/chrj/smtpd"
 	"log"
+
+	"bitbucket.org/chrj/smtpd"
 	"github.com/KingCrunch/visualsmtp/store"
 	"github.com/KingCrunch/visualsmtp/mail"
 )

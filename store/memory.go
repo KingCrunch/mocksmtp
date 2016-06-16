@@ -4,44 +4,52 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/KingCrunch/visualsmtp/mail"
 	"time"
+	"errors"
 )
 
-type InMemory struct {
-	mailBucket map[uuid.UUID]mail.Mail
+type memory struct {
+	mailBucket []mail.Mail
 }
 
-func NewInMemoryStore () (InMemory){
-	return InMemory{
-		mailBucket: make(map[uuid.UUID] mail.Mail),
+func NewMemoryStore() (*memory) {
+	return &memory{
+		mailBucket: make([]mail.Mail,0,32),
 	}
 }
 
-func (s InMemory) Get(id uuid.UUID) (mail.Mail, error) {
-	return s.mailBucket[id], nil
+func (s *memory) Get(id uuid.UUID) (mail.Mail, error) {
+	for _, el := range s.mailBucket {
+		if (el.Id == id) {
+			return el, nil
+		}
+	}
+	return mail.Mail{}, errors.New("Not found")
 }
 
-func (s InMemory) List() (map[uuid.UUID]mail.Mail, error) {
+func (s *memory) List() ([]mail.Mail, error) {
 	return s.mailBucket, nil
 }
 
-func (s InMemory) Push(mail mail.Mail) (error) {
-	s.mailBucket[mail.Id] = mail
+func (s *memory) Push(mail mail.Mail) (error) {
+	s.mailBucket = append(s.mailBucket, mail)
 
 	return nil
 }
 
-func (s InMemory) PurgeBefore(t time.Time) error {
-	for index, mail := range s.mailBucket {
-		if (mail.ReceivedAt.Before(t)) {
-			delete(s.mailBucket, index)
+func (s *memory) PurgeBefore(t time.Time) error {
+	newBucket := make([]mail.Mail, 0, len(s.mailBucket))
+	for _, mail := range s.mailBucket {
+		if (!mail.ReceivedAt.Before(t)) {
+			newBucket = append(newBucket, mail)
 		}
 	}
+	s.mailBucket = newBucket
 
 	return nil
 }
 
-func (s InMemory) Purge() (error) {
-	s.mailBucket = make(map[uuid.UUID] mail.Mail)
+func (s *memory) Purge() (error) {
+	s.mailBucket = make([]mail.Mail, 0, len(s.mailBucket))
 
 	return nil
 }

@@ -58,7 +58,7 @@ func main() {
 		return
 	}
 
-	s := store.NewInMemoryStore()
+	s := store.NewMemoryStore()
 
 	fmt.Println("Start HTTP-Server listening on "+options.HttpBind)
 	go RunHttpServer(options.HttpBind, s)
