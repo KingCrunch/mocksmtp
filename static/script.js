@@ -3,7 +3,7 @@ function loadMail(id, index) {
         window.open('/mail/multi/'+id+'/'+index, '_blank');
     }
     else {
-        window.open('/mail/'+id, '_blank');
+        window.open('/mail/single/'+id, '_blank');
     }
 }
 

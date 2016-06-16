@@ -57,6 +57,22 @@ func RunHttpServer(bind string, s store.Store) {
 
 		fmt.Fprint(w, html.EscapeString(string(m.Parts[index].Data)))
 	})
+	router.GET("/mail/single/:id", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		id, err := uuid.FromString(params.ByName("id"))
+		if (err != nil) {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		var m mail.Mail
+		m, err = s.Get(id)
+		if (err != nil) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		fmt.Fprint(w, html.EscapeString(string(m.Data)))
+	})
 
 	router.DELETE("/mail", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		s.Purge()
