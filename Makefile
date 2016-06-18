@@ -1,9 +1,9 @@
 
-NAME=visualsmtp
+NAME=mocksmtp
 VERSION=0.0.0
 
 .PHONY: build
-build: generate
+build: dependencies generate
 	go build
 
 .PHONY: build-all
@@ -13,7 +13,7 @@ build-all: generate
 
 .PHONY: clean
 clean:
-	rm -fv visualsmtp visualsmtp-* bindata_*
+	rm -rfv mocksmtp mocksmtp-* bindata_* vendor/github.com vendor/bitbucket.org
 
 .PHONY: generate
 generate: dependencies
@@ -21,6 +21,4 @@ generate: dependencies
 
 .PHONY: dependencies
 dependencies:
-	go get ./...
-	go get github.com/jteeuwen/go-bindata/...
-	go get github.com/elazarl/go-bindata-assetfs/...
+	govendor sync

@@ -1,7 +1,7 @@
-# visualsmtp
+# mocksmtp
 
-`visualsmtp` is a simple fake-SMTP-server with the purpose to catch
-all emails and inspect them.
+`mocksmtp` is a fake-SMTP-server with the purpose to catch
+all emails and allows to ^inspect them.
 
 ## Use-cases
 

@@ -1,18 +1,19 @@
 package main
 
 import (
-	"net/http"
 	"fmt"
-	"github.com/satori/go.uuid"
-	"github.com/julienschmidt/httprouter"
-	"github.com/KingCrunch/visualsmtp/store"
-	"github.com/KingCrunch/visualsmtp/mail"
 	"strconv"
 	"log"
+	"bytes"
+	"net/http"
+	"io/ioutil"
 	"encoding/base64"
 	"mime/quotedprintable"
-	"bytes"
-	"io/ioutil"
+
+	"github.com/satori/go.uuid"
+	"github.com/julienschmidt/httprouter"
+	"github.com/KingCrunch/mocksmtp/store"
+	"github.com/KingCrunch/mocksmtp/mail"
 )
 
 func RunHttpServer(bind string, s store.Store) {

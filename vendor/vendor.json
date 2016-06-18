@@ -1,0 +1,37 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "qnByFBUW//y1SPg3xAm/qehn1Gw=",
+			"path": "bitbucket.org/chrj/smtpd",
+			"revision": "9336127e393c",
+			"revisionTime": "2016-05-01T15:37:06+0200"
+		},
+		{
+			"checksumSHA1": "5ftkjfUwI9A6xCQ1PwIAd5+qlo0=",
+			"path": "github.com/elazarl/go-bindata-assetfs",
+			"revision": "57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2",
+			"revisionTime": "2015-12-24T04:54:52Z"
+		},
+		{
+			"checksumSHA1": "MzTCg3kFsi/89bf1wGsGJwIykEM=",
+			"path": "github.com/jteeuwen/go-bindata",
+			"revision": "a0ff2567cfb70903282db057e799fd826784d41d",
+			"revisionTime": "2015-10-23T09:11:02Z"
+		},
+		{
+			"checksumSHA1": "mZK+4q1Xr8z0AwkCAgO+7Rb8xk8=",
+			"path": "github.com/julienschmidt/httprouter",
+			"revision": "77366a47451a56bb3ba682481eed85b64fea14e8",
+			"revisionTime": "2016-02-19T15:40:26Z"
+		},
+		{
+			"checksumSHA1": "1myjT8gKwUI3WNE5a/85jNPL8Fo=",
+			"path": "github.com/satori/go.uuid",
+			"revision": "879c5887cd475cd7864858769793b2ceb0d44feb",
+			"revisionTime": "2016-06-07T14:43:47Z"
+		}
+	],
+	"rootPath": "github.com/KingCrunch/mocksmtp"
+}

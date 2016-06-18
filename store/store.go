@@ -2,7 +2,7 @@ package store
 
 import (
 	"github.com/satori/go.uuid"
-	"github.com/KingCrunch/visualsmtp/mail"
+	"github.com/KingCrunch/mocksmtp/mail"
 	"time"
 )
 

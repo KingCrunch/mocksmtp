@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"bitbucket.org/chrj/smtpd"
-	"github.com/KingCrunch/visualsmtp/store"
-	"github.com/KingCrunch/visualsmtp/mail"
+	"github.com/KingCrunch/mocksmtp/store"
+	"github.com/KingCrunch/mocksmtp/mail"
 )
 
 func RunSmtpServer(bind string, s store.Store) {

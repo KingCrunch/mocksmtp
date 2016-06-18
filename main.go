@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"os"
 	"os/signal"
-	"github.com/KingCrunch/visualsmtp/store"
+	"github.com/KingCrunch/mocksmtp/store"
 	"time"
 )
 
-const Name string = "visualsmtp"
+const Name string = "mocksmtp"
 const Version string = "0.1.0"
 const Help string = `
 This tool provides a SMTP-Server and a HTTP-server.
