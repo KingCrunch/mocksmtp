@@ -9,6 +9,7 @@ build: dependencies generate
 .PHONY: build-all
 build-all: generate
 	GOOS=linux GOARCH=amd64 go build -o ${NAME}-${VERSION}-linux-amd64
+	GOOS=linux GOARCH=386 go build -o ${NAME}-${VERSION}-linux-amd64
 	GOOS=linux GOARCH=arm go build -o ${NAME}-${VERSION}-linux-arm
 
 .PHONY: clean
