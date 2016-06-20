@@ -31,6 +31,12 @@
 			"path": "github.com/satori/go.uuid",
 			"revision": "879c5887cd475cd7864858769793b2ceb0d44feb",
 			"revisionTime": "2016-06-07T14:43:47Z"
+		},
+		{
+			"checksumSHA1": "T9GzLRIXgCtunlW4c5WfVqj4Ux0=",
+			"path": "github.com/veqryn/go-email/email",
+			"revision": "388713805b1e28295565f252ab14b53e1267b0bc",
+			"revisionTime": "2016-02-17T07:03:07Z"
 		}
 	],
 	"rootPath": "github.com/KingCrunch/mocksmtp"

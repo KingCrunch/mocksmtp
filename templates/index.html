@@ -24,7 +24,7 @@
             <tbody>
             {{range .}}
             <tr style="cursor:pointer;" onclick="loadMailMeta({{.Id}})">
-                <td>{{.ReceivedAt | datetime}}</td>
+                <td>{{.FirstSeen | datetime}}</td>
                 <td>{{.Sender}}</td>
                 <td>
                     <ul>

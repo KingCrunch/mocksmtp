@@ -7,7 +7,7 @@
         </tr>
         </thead>
         <tbody>
-        {{range $index,$element := .Header}}
+        {{range $index,$element := .Message.Header}}
             <tr>
             <td>{{$index}}</td>
             <td><ul>{{range $element}}<li>{{.}}</li>{{end}}</ul></td>
@@ -24,16 +24,17 @@
         </thead>
         <tbody>
         {{$id := .Id}}
-    {{if .Multipart}}
-    {{range $index,$element := .Parts}}
+    {{if .Message.HasParts}}
+    {{range $index,$element := .Message.Parts}}
         <tr style="cursor:pointer;" onclick="loadMail({{$id}}, {{$index}})">
-            <td>{{index $element.Header "Content-Type" 0}}</td>
-            <td>{{$element.Disposition}}</td>
+            <td>{{$element.Header | contenttype }}</td>
+            <td>{{$element.Header | contentdisposition }}</td>
         </tr>
     {{end}}
-    {{else}}
+    {{end}}
+    {{if .Message.HasBody}}
         <tr style="cursor:pointer;" onclick="loadMail({{$id}})">
-            <td>{{index .Header "Content-Type" 0}}</td>
+            <td>{{.Header | contenttype }}</td>
             <td>inline</td>
         </tr>
     {{end}}

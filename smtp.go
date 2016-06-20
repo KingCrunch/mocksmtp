@@ -2,18 +2,19 @@ package main
 
 import (
 	"log"
+	"bytes"
 
 	"bitbucket.org/chrj/smtpd"
 	"github.com/KingCrunch/mocksmtp/store"
-	"github.com/KingCrunch/mocksmtp/mail"
+	"github.com/veqryn/go-email/email"
 )
 
 func RunSmtpServer(bind string, s store.Store) {
 	server := &smtpd.Server{
 		Handler: func(peer smtpd.Peer, env smtpd.Envelope) error {
 			log.Printf("New Mail from %q to %q", env.Sender, env.Recipients)
-			m := mail.NewMail(peer, env)
-			err := s.Push(m)
+			m, _ := email.ParseMessage(bytes.NewReader(env.Data))
+			err := s.Push(store.NewItem(m, env.Sender, env.Recipients))
 			check(err)
 
 			return nil

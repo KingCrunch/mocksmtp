@@ -4,12 +4,21 @@ import (
 	"html/template"
 	"log"
 	"time"
+	"github.com/veqryn/go-email/email"
 )
 
 var (
 	templateMap = template.FuncMap{
 		"datetime": func(t time.Time) string {
 			return t.Format(time.RFC3339)
+		},
+		"contenttype": func(header email.Header) (string, error) {
+			h, _, e := header.ContentType()
+			return h, e
+		},
+		"contentdisposition": func(header email.Header) (string, error) {
+			h, _, e := header.ContentDisposition()
+			return h, e
 		},
 	}
 

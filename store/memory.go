@@ -2,45 +2,45 @@ package store
 
 import (
 	"github.com/satori/go.uuid"
-	"github.com/KingCrunch/mocksmtp/mail"
 	"time"
 	"errors"
 )
 
 type memory struct {
-	mailBucket []mail.Mail
+	mailBucket []*Item
 }
 
 func NewMemoryStore() (*memory) {
 	return &memory{
-		mailBucket: make([]mail.Mail,0,32),
+		mailBucket: make([]*Item,0,32),
 	}
 }
 
-func (s *memory) Get(id uuid.UUID) (mail.Mail, error) {
+func (s *memory) Get(id uuid.UUID) (*Item, error) {
 	for _, el := range s.mailBucket {
 		if (el.Id == id) {
 			return el, nil
 		}
 	}
-	return mail.Mail{}, errors.New("Not found")
+	return &Item{}, errors.New("Not found")
 }
 
-func (s *memory) List() ([]mail.Mail, error) {
+func (s *memory) List() ([]*Item, error) {
 	return s.mailBucket, nil
 }
 
-func (s *memory) Push(mail mail.Mail) (error) {
-	s.mailBucket = append(s.mailBucket, mail)
+func (s *memory) Push(item *Item) (error) {
+	item.Message.Header.ContentDisposition()
+	s.mailBucket = append(s.mailBucket, item)
 
 	return nil
 }
 
 func (s *memory) PurgeBefore(t time.Time) error {
-	newBucket := make([]mail.Mail, 0, len(s.mailBucket))
-	for _, mail := range s.mailBucket {
-		if (!mail.ReceivedAt.Before(t)) {
-			newBucket = append(newBucket, mail)
+	newBucket := make([]*Item, 0, len(s.mailBucket))
+	for _, item := range s.mailBucket {
+		if (!item.FirstSeen.Before(t)) {
+			newBucket = append(newBucket, item)
 		}
 	}
 	s.mailBucket = newBucket
@@ -49,7 +49,7 @@ func (s *memory) PurgeBefore(t time.Time) error {
 }
 
 func (s *memory) Purge() (error) {
-	s.mailBucket = make([]mail.Mail, 0, len(s.mailBucket))
+	s.mailBucket = make([]*Item, 0, len(s.mailBucket))
 
 	return nil
 }
