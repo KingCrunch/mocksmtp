@@ -3,14 +3,14 @@ package main
 //go:generate go-bindata-assetfs static/... templates/...
 
 import (
-	"log"
 	"flag"
 	"fmt"
-	"runtime"
-	"path/filepath"
+	"github.com/KingCrunch/mocksmtp/store"
+	"log"
 	"os"
 	"os/signal"
-	"github.com/KingCrunch/mocksmtp/store"
+	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -22,11 +22,11 @@ This tool provides a SMTP-Server and a HTTP-server.
 
 var (
 	options struct {
-		HttpBind string
-		SmtpBind string
+		HttpBind  string
+		SmtpBind  string
 		Retention time.Duration
-		Version bool
-		Help bool
+		Version   bool
+		Help      bool
 	}
 )
 
@@ -43,27 +43,27 @@ func init() {
 func main() {
 	flag.Parse()
 
-	if (options.Help) {
+	if options.Help {
 		file, err := filepath.Abs(os.Args[0])
 		check(err)
-		fmt.Println(Name+"-"+Version+"-"+runtime.GOOS+"-"+runtime.GOARCH)
-		fmt.Println(file+" [-help|-h] [-version] [-http-bind=[<ip>]:<port>] [-smtp-bind=[<ip>]:<port>]")
+		fmt.Println(Name + "-" + Version + "-" + runtime.GOOS + "-" + runtime.GOARCH)
+		fmt.Println(file + " [-help|-h] [-version] [-http-bind=[<ip>]:<port>] [-smtp-bind=[<ip>]:<port>]")
 		fmt.Println(Help)
 		flag.PrintDefaults()
 		return
 	}
 
-	if (options.Version) {
-		fmt.Println(Name+"-"+Version+"-"+runtime.GOOS+"-"+runtime.GOARCH)
+	if options.Version {
+		fmt.Println(Name + "-" + Version + "-" + runtime.GOOS + "-" + runtime.GOARCH)
 		return
 	}
 
 	s := store.NewMemoryStore()
 
-	fmt.Println("Start HTTP-Server listening on "+options.HttpBind)
+	fmt.Println("Start HTTP-Server listening on " + options.HttpBind)
 	go RunHttpServer(options.HttpBind, s)
 
-	fmt.Println("Start SMTP-server listening on "+options.SmtpBind)
+	fmt.Println("Start SMTP-server listening on " + options.SmtpBind)
 	go RunSmtpServer(options.SmtpBind, s)
 
 	c := make(chan os.Signal, 1)
@@ -73,7 +73,7 @@ func main() {
 	for {
 		select {
 		case s := <-c:
-			if (s == os.Interrupt) {
+			if s == os.Interrupt {
 				ticker.Stop()
 				fmt.Println("\nExit. Bye!")
 				return
@@ -85,7 +85,7 @@ func main() {
 	}
 }
 
-func check (err error) {
+func check(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}

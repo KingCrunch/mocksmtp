@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/veqryn/go-email/email"
 	"html/template"
 	"log"
 	"time"
-	"github.com/veqryn/go-email/email"
 )
 
 var (

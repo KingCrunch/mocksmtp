@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"net/http"
+	"strconv"
 
-	"github.com/satori/go.uuid"
-	"github.com/julienschmidt/httprouter"
 	"github.com/KingCrunch/mocksmtp/store"
+	"github.com/julienschmidt/httprouter"
+	"github.com/satori/go.uuid"
 )
 
 func RunHttpServer(bind string, s store.Store) {
@@ -24,14 +24,14 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 	router.GET("/mail/meta/:id", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
-		if (err != nil) {
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		var m *store.Item
 		m, err = s.Get(id)
-		if (err != nil) {
+		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
@@ -41,15 +41,15 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 	router.GET("/mail/multi/:id/:part", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
-		index,err := strconv.Atoi(params.ByName("part"))
-		if (err != nil) {
+		index, err := strconv.Atoi(params.ByName("part"))
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		var m *store.Item
 		m, err = s.Get(id)
-		if (err != nil) {
+		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
@@ -60,14 +60,14 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 	router.GET("/mail/single/:id", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
-		if (err != nil) {
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		var m *store.Item
 		m, err = s.Get(id)
-		if (err != nil) {
+		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}

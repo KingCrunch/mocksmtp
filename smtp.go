@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"bytes"
+	"log"
 
 	"bitbucket.org/chrj/smtpd"
 	"github.com/KingCrunch/mocksmtp/store"
@@ -24,4 +24,3 @@ func RunSmtpServer(bind string, s store.Store) {
 	err := server.ListenAndServe(bind)
 	check(err)
 }
-
