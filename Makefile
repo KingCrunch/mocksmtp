@@ -3,8 +3,16 @@ NAME=mocksmtp
 VERSION=0.0.0
 
 .PHONY: build
-build: dependencies generate
+build:
+	go get github.com/elazarl/go-bindata-assetfs/...
+	go get github.com/jteeuwen/go-bindata/...
+	go generate
+	govendor sync
 	go build
+
+.PHONY: test
+test: build
+	go test -cover
 
 .PHONY: build-all
 build-all: generate
@@ -15,11 +23,3 @@ build-all: generate
 .PHONY: clean
 clean:
 	rm -rfv mocksmtp mocksmtp-* bindata_* vendor/github.com vendor/bitbucket.org
-
-.PHONY: generate
-generate: dependencies
-	go generate
-
-.PHONY: dependencies
-dependencies:
-	govendor sync
