@@ -19,11 +19,12 @@
                 <td>Received</td>
                 <td>Sender</td>
                 <td>Recipients</td>
+                <td>Actions</td>
             </tr>
             </thead>
             <tbody>
             {{range .}}
-            <tr style="cursor:pointer;" onclick="loadMailMeta({{.Id}})">
+            <tr style="cursor:pointer;">
                 <td>{{.FirstSeen | datetime}}</td>
                 <td>{{.Sender}}</td>
                 <td>
@@ -31,6 +32,7 @@
                         {{range .Recipients}}<li>{{ . }}</li>{{else}}No recipients!{{end}}
                     </ul>
                 </td>
+                <td><a href="/mail/meta/{{.Id}}" target="_blank" onclick="loadMailMeta(event,this)">Open</a></td>
 
             </tr>
             {{else}}
@@ -41,8 +43,9 @@
             </tbody>
             </table>
         </div>
-        <div class="box" id="meta">
-            Select a mail from the list.
+        <div class="box">
+            <object id="meta" type="text/html" data="" style="width:100%; height:100%;margin:0;">
+            </object>
         </div>
     </div>
 </body>

@@ -1,4 +1,18 @@
-<section>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>List</title>
+    <style>
+        {{template "static/style.css"}}
+    </style>
+    <script type="text/javascript">
+        {{template "static/script.js"}}
+    </script>
+</head>
+<body>
+<div id="container">
+    <section>
     <table>
         <thead>
         <tr>
@@ -20,24 +34,30 @@
         <tr>
             <td>Content-Type</td>
             <td>Disposition</td>
+            <td>Actions</td>
         </tr>
         </thead>
         <tbody>
         {{$id := .Id}}
     {{if .Message.HasParts}}
     {{range $index,$element := .Message.Parts}}
-        <tr style="cursor:pointer;" onclick="loadMail({{$id}}, {{$index}})">
+        <tr>
             <td>{{$element.Header | contenttype }}</td>
             <td>{{$element.Header | contentdisposition }}</td>
+            <td><a href="/mail/multi/{{$id}}/{{$index}}" target="_blank">Open</a></td>
         </tr>
     {{end}}
     {{end}}
     {{if .Message.HasBody}}
-        <tr style="cursor:pointer;" onclick="loadMail({{$id}})">
+        <tr>
             <td>{{.Header | contenttype }}</td>
             <td>inline</td>
+            <td><a href="/mail/single/{{$id}}" target="_blank">Open</a></td>
         </tr>
     {{end}}
         </tbody>
     </table>
 </section>
+</div>
+</body>
+</html>

@@ -1,16 +1,9 @@
-function loadMail(id, index) {
-    if (typeof index !== 'undefined') {
-        window.open('/mail/multi/'+id+'/'+index, '_blank');
-    }
-    else {
-        window.open('/mail/single/'+id, '_blank');
-    }
-}
+function loadMailMeta(e,self) {
+    e.preventDefault();
+    document.getElementById("meta").data = self.href;
+    return;
 
-function loadMailMeta(id) {
-    var xmlhttp;
-
-    xmlhttp = new XMLHttpRequest();
+    var xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
@@ -26,6 +19,6 @@ function loadMailMeta(id) {
         }
     };
 
-    xmlhttp.open("GET", "/mail/meta/" + id, true);
+    xmlhttp.open("GET", self.href, true);
     xmlhttp.send();
 }
