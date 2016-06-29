@@ -45,11 +45,15 @@ func main() {
 
 	if options.Help {
 		file, err := filepath.Abs(os.Args[0])
-		check(err)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		fmt.Println(Name + "-" + Version + "-" + runtime.GOOS + "-" + runtime.GOARCH)
 		fmt.Println(file + " [-help|-h] [-version] [-http-bind=[<ip>]:<port>] [-smtp-bind=[<ip>]:<port>]")
 		fmt.Println(Help)
 		flag.PrintDefaults()
+
 		return
 	}
 
@@ -82,11 +86,5 @@ func main() {
 			s.PurgeBefore(t.Add(-1 * options.Retention))
 		}
 
-	}
-}
-
-func check(err error) {
-	if err != nil {
-		log.Fatal(err)
 	}
 }

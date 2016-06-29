@@ -15,12 +15,14 @@ func RunSmtpServer(bind string, s store.Store) {
 			log.Printf("New Mail from %q to %q", env.Sender, env.Recipients)
 			m, _ := email.ParseMessage(bytes.NewReader(env.Data))
 			err := s.Push(store.NewItem(m, env.Sender, env.Recipients))
-			check(err)
 
-			return nil
+			return err
 		},
 	}
 
 	err := server.ListenAndServe(bind)
-	check(err)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }

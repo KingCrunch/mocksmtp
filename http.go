@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"log"
 
 	"github.com/KingCrunch/mocksmtp/store"
 	"github.com/julienschmidt/httprouter"
@@ -18,9 +19,19 @@ func RunHttpServer(bind string, s store.Store) {
 
 	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		l, err := s.List()
-		check(err)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+
 		err = templates.ExecuteTemplate(w, "templates/index.html", l)
-		check(err)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	})
 	router.GET("/mail/meta/:id", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
@@ -37,7 +48,11 @@ func RunHttpServer(bind string, s store.Store) {
 		}
 
 		err = templates.ExecuteTemplate(w, "templates/meta.html", m)
-		check(err)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	})
 	router.GET("/mail/multi/:id/:part", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		id, err := uuid.FromString(params.ByName("id"))
@@ -54,7 +69,12 @@ func RunHttpServer(bind string, s store.Store) {
 			return
 		}
 
-		ctype, _, _ := m.Message.Parts[index].Header.ContentType()
+		ctype, _, e2 := m.Message.Parts[index].Header.ContentType()
+		if e2 != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		w.Header().Add("Content-Type", ctype)
 		fmt.Fprint(w, string(m.Message.Parts[index].Body))
 	})
@@ -72,7 +92,12 @@ func RunHttpServer(bind string, s store.Store) {
 			return
 		}
 
-		ctype, _, _ := m.Message.Header.ContentType()
+		ctype, _, e2 := m.Message.Header.ContentType()
+		if e2 != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		w.Header().Add("Content-Type", ctype)
 		fmt.Fprint(w, string(m.Message.Body))
 	})
@@ -84,5 +109,7 @@ func RunHttpServer(bind string, s store.Store) {
 	})
 
 	err := http.ListenAndServe(bind, router)
-	check(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
