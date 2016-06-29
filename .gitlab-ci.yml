@@ -1,10 +1,7 @@
 image: golang
 
 before_script:
-  - echo `pwd`
   - mkdir -p /go/src/github.com/KingCrunch/ && cp -ar /builds/Golang/mocksmtp /go/src/github.com/KingCrunch/mocksmtp
-  - go version
-  - go get github.com/kardianos/govendor
 
 test:
   script:

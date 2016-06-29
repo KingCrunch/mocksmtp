@@ -1,0 +1,19 @@
+language: go
+sudo: false
+
+go:
+  - 1.5
+  - 1.6
+  - tip
+
+before_install:
+  - go get github.com/kardianos/govendor
+
+install:
+  - make get-deps
+
+before_script:
+  - export GO15VENDOREXPERIMENT=1
+
+script:
+  - make test
